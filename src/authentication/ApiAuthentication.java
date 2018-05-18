@@ -42,7 +42,6 @@ public class ApiAuthentication extends HttpServlet {
 		// TODO Auto-generated method stub
 		PrintWriter out = response.getWriter();
 		response.setContentType("application/json;charset=UTF-8");
-HttpSession session = request.getSession();
 		
 		
 		try {
@@ -59,7 +58,8 @@ HttpSession session = request.getSession();
 					JSONObject resJSON = new JSONObject();
 					resJSON.put("error", error);			
 					JSONObject dataJSON = new JSONObject();		
-					resJSON.put("data",dataJSON);		
+					resJSON.put("data",dataJSON);
+					resJSON.put("issuer", this.getMyIdentifier());
 					out.print(resJSON);
 					out.flush();
 					return;
@@ -72,6 +72,7 @@ HttpSession session = request.getSession();
 					resJSON.put("error", error);			
 					JSONObject dataJSON = new JSONObject();	
 					resJSON.put("data",dataJSON);	
+					resJSON.put("issuer", this.getMyIdentifier());
 					out.print(resJSON);
 					out.flush();
 					return;
@@ -83,7 +84,8 @@ HttpSession session = request.getSession();
 					JSONObject resJSON = new JSONObject();
 					resJSON.put("error", error);			
 					JSONObject dataJSON = new JSONObject();	
-					resJSON.put("data",dataJSON);	
+					resJSON.put("data",dataJSON);
+					resJSON.put("issuer", this.getMyIdentifier());
 					out.print(resJSON);
 					out.flush();
 					return;

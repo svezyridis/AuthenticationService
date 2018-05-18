@@ -25,18 +25,13 @@
    	<form class="" method="post" action="login">
    	
    	<%
-		String callback = request.getParameter("callback");
-		String system = "SYSTEM";
-		
-		if (callback != null && callback != "") {
-			%>
-			<input type="hidden" name="callback" value="<%=callback%>">
-			<%
-		}
+		String callback = "login.jsp";
+		String system = "DIRID";
 		%>
-        		<select name="system">
-        			<option>SYSTEM</option>
-        		</select>
+		
+			<input type="hidden" name="callback" value="<%=callback%>">
+			<input type="hidden" name="system" value="<%=system%>">
+		
         		<div class="row username">
 	    			<input type="text" id="username" name="username" placeholder="username" />
         		</div>
