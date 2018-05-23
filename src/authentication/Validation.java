@@ -11,7 +11,7 @@ import java.util.Map;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class Validation {
-	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
+	   static final String JDBC_DRIVER = "org.mariadb.jdbc.Driver";   
     static final String DB_URL = Database.getURL();
 
     //  Database credentials
@@ -43,7 +43,7 @@ public class Validation {
 		Map<String,String> userData = new HashMap<String,String>();
 		try{
 		      //STEP 2: Register JDBC driver
-		      Class.forName("com.mysql.jdbc.Driver");
+		      Class.forName(JDBC_DRIVER);
 
 		      //STEP 3: Open a connection
 		      System.out.println("Connecting to a selected database...");

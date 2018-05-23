@@ -22,15 +22,31 @@
 			session.removeAttribute("flash");
 		}
 		%>
-   	<form class="" method="post" action="login">
-   	
-   	<%
+			<%	if (request.getParameter("callback")==null||request.getParameter("callback")==""){
 		String callback = "login.jsp";
 		String system = "DIRID";
+   	}
+			else{
+				String callback = request.getParameter("callback");
+				String system = "DIRID";
+			}
 		%>
+   	<form class="" method="post" action="login">
+   	
+   <%
+		String callback = request.getParameter("callback");
+		String system = request.getParameter("system");
 		
+		if (callback != null && callback != "") {
+			%>
 			<input type="hidden" name="callback" value="<%=callback%>">
-			<input type="hidden" name="system" value="<%=system%>">
+			<%					
+		}
+		else{	
+		}
+		%>
+   
+		
 		
         		<div class="row username">
 	    			<input type="text" id="username" name="username" placeholder="username" />

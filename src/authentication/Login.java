@@ -25,6 +25,7 @@ import org.json.JSONObject;
 import org.mindrot.jbcrypt.BCrypt;
 
 import crypto.Encryption;
+import zookeeper.Configuration;
 
 /**
  * Servlet implementation class Login
@@ -32,10 +33,10 @@ import crypto.Encryption;
 @WebServlet("/login")
 public class Login extends HttpServlet {
 	public static String getMyIdentifier() {
-		return "SKAUTH2";
+		return Configuration.getMyIdentifier();
 	}
 	private static final long serialVersionUID = 1L;
-	 static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";    
+	 static final String JDBC_DRIVER = "org.mariadb.jdbc.Driver";    
 	    static final String DB_URL = Database.getURL();
 
 	    //  Database credentials
@@ -81,11 +82,19 @@ public class Login extends HttpServlet {
 				String password = request.getParameter("password");
 				String callback = request.getParameter("callback");
 				
-
-				// TODO handle missing system, username or password
-				if (systemIdentifier == null || username == null || password == null || systemIdentifier.equals("") || username.equals("") || password.equals("") ) {
+				
+				if (systemIdentifier == null  || systemIdentifier.equals("") ) {
 					response.setContentType("text/html;charset=UTF-8");
-					session.setAttribute("flash", "Missing system, username or password");
+					session.setAttribute("flash", "Missing system");
+					response.sendRedirect("login.jsp");
+					return;
+				}
+				
+
+				
+				if ( username == null || password == null ||username.equals("") || password.equals("") ) {
+					response.setContentType("text/html;charset=UTF-8");
+					session.setAttribute("flash", "Missing username or password");
 					response.sendRedirect("login.jsp");
 					return;
 				}

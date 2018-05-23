@@ -10,7 +10,13 @@
     	<zoouser>savvas</zoouser>
     	<zoopass>savvas</zoopass>
     </zookeeper>
+    <dburl>jdbc:mariadb://localhost/AUTHSERVICE</dburl>
+    <dbuser>savvas</dbuser>
+    <dbpass>root</dbpass>
     <identifier>AUTHID</identifier>
     <key>7vjTsO0IhSZsNA6ze37Dk/xXw2nphFM9ZAMUkwXgaAA=</key>
     <name>name</name>
+     <apiurl>https://snf-815309.vm.okeanos.grnet.gr:8443/AuthenticationService/ApiAuthentication</apiurl>
+      <registerurl>https://snf-815309.vm.okeanos.grnet.gr:8443/AuthenticationService/signup.jsp</registerurl>
+       <loginurl>https://snf-815309.vm.okeanos.grnet.gr:8443/AuthenticationService/login.jsp</loginurl>
   </settings>

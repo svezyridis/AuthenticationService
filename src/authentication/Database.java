@@ -1,16 +1,18 @@
 package authentication;
 
+import zookeeper.Configuration;
+
 public class Database {
 	public static String getURL() {
-		return "jdbc:mysql://localhost/USERS";
+		return Configuration.getDBURL();
 	}
 	
 	public static String getUsername() {
-		return "savvas";
+		return Configuration.getDBUSER();
 	}
 	
 	public static String getPassword() {
-		return "root";
+		return Configuration.getDBPASS();
 	}
 
 }

@@ -27,7 +27,7 @@ public class Register extends HttpServlet {
         super();
         // TODO Auto-generated constructor stub
     }
-    static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";    
+    static final String JDBC_DRIVER = "org.mariadb.jdbc.Driver";    
     static final String DB_URL = Database.getURL();
 
     //  Database credentials
@@ -59,7 +59,7 @@ public class Register extends HttpServlet {
 	
 		try{
 		      //STEP 2: Register JDBC driver
-		      Class.forName("com.mysql.jdbc.Driver");
+		      Class.forName(JDBC_DRIVER);
 
 		      //STEP 3: Open a connection
 		      System.out.println("Connecting to a selected database...");

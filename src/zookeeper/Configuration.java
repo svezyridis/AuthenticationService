@@ -8,6 +8,7 @@ import java.net.UnknownHostException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
@@ -41,7 +42,6 @@ import org.json.JSONObject;
 public class Configuration implements ServletContextListener {
 	private static  List<String> zookeeperIPs = new ArrayList<String>();
 	private String host="";
-	private static  String myip;
 	private static String identifier;
 	private static String secretkey;
 	private static String dirpath;
@@ -53,8 +53,14 @@ public class Configuration implements ServletContextListener {
 	private List<Map> Systems=new ArrayList<Map>();
 	private List<String> fsList = null;
 	final CountDownLatch connectedSignal = new CountDownLatch(1);
+	private static String apiURL;
+	private static String registerURL;
+	private static String loginURL;
 	private static String name;
 	private static Configuration ConfInstance = null;
+	private static String DBURL;
+	private static String DBUSER;
+	private static String DBPASS;
 	
 
 	
@@ -67,16 +73,24 @@ public class Configuration implements ServletContextListener {
 		Configuration instance = getInstance();
 		return instance.secretkey;
 	}
+	public static String getDBURL() {
+		Configuration instance = getInstance();
+		return instance.DBURL;
+	}
+	public static String getDBUSER() {
+		Configuration instance = getInstance();
+		return instance.DBUSER;
+	}
+	public static String getDBPASS() {
+		Configuration instance = getInstance();
+		return instance.DBPASS;
+	}
 	
 	public static String getMyIdentifier() {
 		Configuration instance = getInstance();
 		return instance.identifier;
 	}
 	
-	public static String getMyIP() {
-		Configuration instance = getInstance();
-		return instance.myip;
-	}
 	
 	public static String getZookeeperIPs(){
 		Configuration instance = getInstance();
@@ -106,7 +120,7 @@ public class Configuration implements ServletContextListener {
 		});
 		connectedSignal.await();
 		
-		//zk.addAuthInfo("digest", new String(zoouser+":"+zoopass).getBytes());
+		zk.addAuthInfo("digest", new String(zoouser+":"+zoopass).getBytes());
 		
 		System.out.println("finished zooConnect");
 
@@ -189,6 +203,13 @@ class FsWatcher implements Watcher {
 	            instance.identifier=classElement.getChild("identifier").getValue();    
 	            instance.secretkey=classElement.getChild("key").getValue();
 	            instance.name=classElement.getChild("name").getValue();
+	            instance.apiURL=classElement.getChild("apiurl").getValue();
+	            instance.registerURL=classElement.getChild("registerurl").getValue();
+	            instance.loginURL=classElement.getChild("loginurl").getValue();
+	            instance.DBURL=classElement.getChild("dburl").getValue();
+	            instance.DBUSER=classElement.getChild("dbuser").getValue();
+	            instance.DBPASS=classElement.getChild("dbpass").getValue();
+	            
 	        
 
 	            
@@ -202,29 +223,20 @@ class FsWatcher implements Watcher {
 	
 	public void PublishService(ServletContextEvent sce) {
 		Configuration instance=getInstance();
-		ACL acl = new ACL();
+		ACL acl = null;
 		try {
-			String base64EncodedSHA1Digest = Base64.getEncoder().encodeToString(MessageDigest.getInstance("SHA1").
-					digest((zoopass).getBytes()));
-			acl.setPerms(ZooDefs.Perms.ALL);
-			acl.setId(new Id("digest",zoouser+":"+base64EncodedSHA1Digest));
+			String base64EncodedSHA1Digest = Base64.getEncoder().encodeToString(MessageDigest.getInstance("SHA1").digest((zoouser+":"+zoopass).getBytes()));
+			acl = new ACL(ZooDefs.Perms.ALL, new Id("digest",zoouser+":" + base64EncodedSHA1Digest));
 		}
 		catch (NoSuchAlgorithmException ex) {
 			System.err.println("destroy NoSuchAlgorithmException");
 		}
-		List<ACL> aclList=new ArrayList<ACL>();
-		aclList.add(acl);
 		
-	       try {
-			instance.myip= InetAddress.getLocalHost().toString();
-			instance.myip=instance.myip+"/"+sce.getServletContext().getServletContextName();
-			System.out.println(instance.myip);
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	  
 	       JSONObject configJSON=new JSONObject();
-	       configJSON.put("URL", instance.myip);
+	       configJSON.put("apiURL", instance.apiURL);
+	       configJSON.put("registerURL", instance.registerURL);
+	       configJSON.put("loginURL", instance.loginURL);
 	       configJSON.put("key", instance.secretkey);
 	       configJSON.put("id", instance.identifier);
 	       configJSON.put("name", instance.name);
@@ -237,7 +249,7 @@ class FsWatcher implements Watcher {
 				instance.zoo.create(authpath, "".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE,
 						CreateMode.PERSISTENT);
 			}
-			instance.zoo.create(authpath+"/"+identifier+"2", configJSON.toString().getBytes(),ZooDefs.Ids.OPEN_ACL_UNSAFE,
+			instance.zoo.create(authpath+"/"+identifier, configJSON.toString().getBytes(),Arrays.asList(acl),
 					CreateMode.EPHEMERAL);
 		} catch (InterruptedException e1) {
 			// TODO Auto-generated catch block
